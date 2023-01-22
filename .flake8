@@ -1,0 +1,7 @@
+[flake8]
+exclude = "venv"
+max-line-length = 110
+max-complexity = 15
+extend-ignore = 
+    F401
+per-file-ignores =
