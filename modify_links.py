@@ -141,8 +141,11 @@ def process_file_image_links(
 
 
 def source_directory_selector(**kwargs: dict[str, dict | list]) -> tuple[str, str]:
-    # print(kwargs)
+    '''
+    Function to check which Static Generator is being used
+    '''
 
+    # print(kwargs)
     if kwargs.get('config').get('docs_dir'):
         source_directory = kwargs.get('config').get('docs_dir')
         site_generator = 'mkdocs'
@@ -153,7 +156,7 @@ def source_directory_selector(**kwargs: dict[str, dict | list]) -> tuple[str, st
     return source_directory, site_generator
 
 
-def main(*args, **kwargs) -> int:
+def on_pre_build(**kwargs) -> None:
     '''
     Main driver function code
     '''
@@ -173,7 +176,7 @@ def main(*args, **kwargs) -> int:
     for filepath in glob.iglob(source_file_path, recursive=True):
 
         normalized_filepath = filepath.replace('\\', '/')
-        # print(normalized_filepath)
+        print(normalized_filepath)
 
         perform_file_transformation(
             regex_pattern, normalized_filepath,
@@ -183,8 +186,6 @@ def main(*args, **kwargs) -> int:
 
     print('Completed: "modify_links" script...')
 
-    return 0
-
 
 if __name__ == '__main__':
-    raise SystemExit(main())
+    on_pre_build()

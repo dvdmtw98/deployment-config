@@ -176,10 +176,8 @@ def main(*args, **kwargs) -> int:
             current_file = frontmatter.load(markdown_file)
 
         if check_if_file_was_modified(normalized_filepath, current_file, force_edit_files):
-
             generate_required_frontmatter(current_file, source_directory, normalized_filepath)
             save_modified_frontmatter_to_file(current_file, normalized_filepath)
-
         else:
             print('File is upto date\n')
 
