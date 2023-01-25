@@ -136,7 +136,7 @@ def generate_required_frontmatter(
     current_file.metadata['last_updated'] = generate_file_update_date(filepath)
 
     # View File Frontmatter
-    print(current_file.metadata, '\n')
+    # print(current_file.metadata, '\n')
 
 
 def save_modified_frontmatter_to_file(

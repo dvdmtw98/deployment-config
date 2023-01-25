@@ -6,3 +6,6 @@ __pycache__/
 # IDE Config Files
 venv
 .vscode
+
+# Misc Files
+docs

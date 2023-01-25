@@ -146,7 +146,7 @@ def source_directory_selector(**kwargs: dict[str, dict | list]) -> tuple[str, st
     '''
 
     # print(kwargs)
-    if kwargs.get('config').get('docs_dir'):
+    if kwargs and kwargs.get('config').get('docs_dir'):
         source_directory = kwargs.get('config').get('docs_dir')
         site_generator = 'mkdocs'
     else:
