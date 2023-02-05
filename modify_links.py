@@ -105,7 +105,7 @@ def process_main_index_content(
         search_result = re.search(regex_pattern, line.rstrip('\n'))
 
         if search_result:
-            if search_result.group(1) not in ["Various Lists", "Languages"]:
+            if search_result.group(1) not in ["Read & Watch List", "Languages"]:
                 output_file.write(line)
         else:
             output_file.write(line)
