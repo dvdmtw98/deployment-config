@@ -39,10 +39,7 @@ def perform_file_transformation(
         with open(source_filepath, "r", encoding='utf-8') as input_file, \
                 open(destination_filepath, "w", encoding='utf-8') as output_file:
 
-            process_file_image_links(
-                input_file, output_file,
-                regex_pattern, common_image_extensions
-            )
+            process_file_image_links(input_file, output_file, regex_pattern, common_image_extensions)
 
         os.replace(destination_filepath, source_filepath)
 
@@ -51,10 +48,7 @@ def perform_file_transformation(
                 open(destination_filepath, "w", encoding='utf-8') as output_file:
 
             process_file_outgoing_links(
-                input_file, output_file,
-                regex_pattern, common_outgoing_extensions,
-                site_generator
-            )
+                input_file, output_file, regex_pattern, common_outgoing_extensions, site_generator)
 
         os.replace(destination_filepath, source_filepath)
 
@@ -179,9 +173,8 @@ def on_pre_build(**kwargs) -> None:
         print(normalized_filepath)
 
         perform_file_transformation(
-            regex_pattern, normalized_filepath,
-            common_image_extensions, common_link_extensions,
-            site_generator
+            regex_pattern, normalized_filepath, common_image_extensions,
+            common_link_extensions, site_generator
         )
 
     print('Completed: "modify_links" script...')

@@ -17,10 +17,8 @@ def generate_file_slug(source_directory: str, filepath: str) -> str:
 
     filepath = (
         filepath
-        .removeprefix(source_directory)
-        .removesuffix('.md')
-        .lower()
-        .replace("'", '')
+        .removeprefix(source_directory).removesuffix('.md')
+        .lower().replace("'", '')
     )
 
     # For Main Index File set slug as '/' (Root)
@@ -29,12 +27,9 @@ def generate_file_slug(source_directory: str, filepath: str) -> str:
 
     slug = (
         filepath
-        .replace('&', 'and')
-        .replace('(', '')
-        .replace(')', '')
-        .replace(' - ', '-')
-        .replace('.', '')
-        .replace('  ', ' ')
+        .replace('&', 'and').replace('(', '')
+        .replace(')', '').replace(' - ', '-')
+        .replace('.', '').replace('  ', ' ')
         .replace(' ', '-')
     )
 
@@ -69,12 +64,9 @@ def generate_file_id(filepath: str) -> str:
     filename = filepath.removesuffix('.md').rsplit('/', maxsplit=1)[1]
     file_id = (
         filename
-        .replace('&', 'and')
-        .replace(',', '')
-        .replace('(', '')
-        .replace(')', '')
-        .replace(' - ', '-')
-        .replace('  ', ' ')
+        .replace('&', 'and').replace(',', '')
+        .replace('(', '').replace(')', '')
+        .replace(' - ', '-').replace('  ', ' ')
         .replace(' ', '-')
         .lower()
     )
@@ -109,13 +101,10 @@ def check_if_file_was_modified(
 
     if frontmatter.check(filepath) and current_file.metadata.get('last_updated'):
         frontmatter_modified_time = (
-            datetime
-            .strptime(current_file.metadata['last_updated'], '%Y-%m-%d %H:%M:%S')
+            datetime.strptime(current_file.metadata['last_updated'], '%Y-%m-%d %H:%M:%S')
         )
         system_modified_time = (
-            datetime
-            .fromtimestamp(os.stat(filepath).st_mtime)
-            .replace(microsecond=0)
+            datetime.fromtimestamp(os.stat(filepath).st_mtime).replace(microsecond=0)
         )
 
         return system_modified_time > frontmatter_modified_time
