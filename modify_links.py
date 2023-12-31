@@ -139,7 +139,7 @@ def process_outgoing_links(file_content: str, link_match: re.Match, site_generat
     else:
         kramdown_attributes = '{: target="_blank" rel="noopener noreferrer" }'
 
-    description = link_match.group(2).replace("|", r"\|")
+    description = link_match.group(2)
     outgoing_link = link_match.group(3)
 
     modified_link = f'[{description}]({outgoing_link}){kramdown_attributes}'
