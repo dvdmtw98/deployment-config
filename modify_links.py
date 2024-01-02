@@ -14,9 +14,12 @@ https://github.com/Pseudonium/Obsidian_to_Anki/issues/332
 '''
 
 from __future__ import annotations
+from io import BytesIO
 import re
 import os
 import glob
+
+import frontmatter
 
 
 def source_directory_selector(**kwargs: dict[str, dict | list]) -> tuple[str, str]:
@@ -43,8 +46,15 @@ def perform_file_transformation(
     Main function to call the transformation logic
     '''
 
-    with open(source_filepath, "r", encoding='utf-8') as input_file:
-        file_content = input_file.read()
+    with open(source_filepath, "r", encoding='utf-8') as input_file_pointer:
+        source_file = frontmatter.load(input_file_pointer)
+
+    file_content = source_file.content
+
+    # Adding Description
+    file_description = source_file.metadata.get('description')
+    if file_description and file_content.find(file_description):
+        file_content = f'{file_description}\n\n{file_content}'
 
     # Process Index file
     markdown_filename = os.path.basename(os.path.splitext(source_filepath)[0])
@@ -71,8 +81,13 @@ def perform_file_transformation(
     for callout in callouts_from_file:
         file_content = process_callouts(file_content, callout, callout_mapping, site_generator)
 
-    with open(source_filepath, "w", encoding='utf-8') as output_file:
-        output_file.write(file_content)
+    source_file.content = file_content
+    output_buffer = BytesIO()
+    frontmatter.dump(source_file, output_buffer)
+
+    with open(source_filepath, mode='wb') as output_file:
+        output_buffer.seek(0)
+        output_file.write(output_buffer.read())
 
 
 def process_main_index(file_content: str, link_regex_pattern: str) -> str:
