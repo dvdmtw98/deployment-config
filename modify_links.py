@@ -58,7 +58,7 @@ def perform_file_transformation(
 
     # Process Index file
     markdown_filename = os.path.basename(os.path.splitext(source_filepath)[0])
-    if markdown_filename in ["Main Index"]:
+    if markdown_filename == "index":
         file_content = process_main_index(file_content, link_regex_pattern)
 
     # Process Links
@@ -197,7 +197,7 @@ def on_pre_build(**kwargs) -> None:
 
     print('Starting: "modify_links" script...')
 
-    links_regex_pattern = r'(!?\[([^\]]*)?\]\(((?:https?://)?[A-Za-z0-9:/.%&#-_ ]+)(?:"(.+)")?\))({:(?:.+)})?'
+    links_regex_pattern = r'(!?\[([^\]]*)?\]\(((?:https?://)?[A-Za-z0-9:/.%&#-_ ]+?)(?:"(.+)")?\))({:(?:.+)})?'
     callout_regex_pattern = r'((?:>+) *\[!([^\]]*)\](.*)?\n(.+(?:\n(?:^.{1,3}$|^.{4}(?<!<!--).*))*))({:(?:.+)})?'
 
     source_directory, site_generator = source_directory_selector(**kwargs)
