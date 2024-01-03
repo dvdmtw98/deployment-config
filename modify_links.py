@@ -65,7 +65,7 @@ def perform_file_transformation(
     links_from_file = re.finditer(link_regex_pattern, file_content, flags=re.I)
     for link in links_from_file:
         if link.group(0).startswith("!["):
-            file_content = process_images(file_content, link, site_generator)
+            file_content = process_images(file_content, link, site_generator, source_file)
         else:
             file_content = process_outgoing_links(file_content, link, site_generator)
 
@@ -81,10 +81,11 @@ def perform_file_transformation(
     for callout in callouts_from_file:
         file_content = process_callouts(file_content, callout, callout_mapping, site_generator)
 
-    source_file.content = file_content
+    # Remove consecutive empty lines
+    source_file.content = re.sub(r'\n\s*\n', '\n\n', file_content)
+
     output_buffer = BytesIO()
     frontmatter.dump(source_file, output_buffer)
-
     with open(source_filepath, mode='wb') as output_file:
         output_buffer.seek(0)
         output_file.write(output_buffer.read())
@@ -163,7 +164,7 @@ def process_outgoing_links(file_content: str, link_match: re.Match, site_generat
     return file_content
 
 
-def process_images(file_content: str, image_match: re.Match, site_generator: str) -> str:
+def process_images(file_content: str, image_match: re.Match, site_generator: str, source_file: frontmatter.Post) -> str:
     '''
     Function to Convert Markdown Image links to Kramdown Image Links
     '''
@@ -171,8 +172,15 @@ def process_images(file_content: str, image_match: re.Match, site_generator: str
     if image_match.group(5):
         return file_content
 
+    original_image = image_match.group(1)
     description = image_match.group(2).rsplit('|')
     image_link = image_match.group(3)
+
+    # Move Banner to Frontmatter (Jekyll Blog)
+    if site_generator == "jekyll" and "banner" in image_link and not source_file.metadata.get('image'):
+        source_file.metadata['image'] = image_link
+        file_content = file_content.replace(original_image, "")
+        return file_content
 
     if len(description) > 1:
         if site_generator == "mkdocs":
@@ -185,7 +193,6 @@ def process_images(file_content: str, image_match: re.Match, site_generator: str
         else:
             modified_image = f'![{description[0]}]({image_link}){{: width="640" .shadow }}'
 
-    original_image = image_match.group(1)
     file_content = file_content.replace(original_image, modified_image)
     return file_content
 
