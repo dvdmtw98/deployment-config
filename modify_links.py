@@ -40,7 +40,7 @@ def source_directory_selector(**kwargs: dict[str, dict | list]) -> tuple[str, st
 
 def perform_file_transformation(
     source_filepath: str, site_generator: str,
-    link_regex_pattern: str, callout_regex_pattern: str
+    link_regex_pattern: str, callout_regex_pattern: str, image_extensions: list[str]
 ) -> None:
     '''
     Main function to call the transformation logic
@@ -64,7 +64,7 @@ def perform_file_transformation(
     # Process Links
     links_from_file = re.finditer(link_regex_pattern, file_content, flags=re.I)
     for link in links_from_file:
-        if link.group(0).startswith("!["):
+        if link.group(0).startswith("![") and link.group(2).endswith(image_extensions):
             file_content = process_images(file_content, link, site_generator, source_file)
         else:
             file_content = process_outgoing_links(file_content, link, site_generator)
@@ -206,13 +206,17 @@ def on_pre_build(**kwargs) -> None:
 
     links_regex_pattern = r'(!?\[([^\]]*)?\]\(((?:https?://)?[A-Za-z0-9:/.%&#-_ ]+?)(?:"(.+)")?\))({:(?:.+)})?'
     callout_regex_pattern = r'((?:>+) *\[!([^\]]*)\](.*)?\n(.+(?:\n(?:^.{1,3}$|^.{4}(?<!<!--).*))*))({:(?:.+)})?'
+    image_extensions = ('.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg')
 
     source_directory, site_generator = source_directory_selector(**kwargs)
     source_file_path = os.path.join(f'{source_directory}', '**', '*.md')
 
     for filepath in glob.iglob(source_file_path, recursive=True):
         print(filepath)
-        perform_file_transformation(filepath, site_generator, links_regex_pattern, callout_regex_pattern)
+        perform_file_transformation(
+            filepath, site_generator, links_regex_pattern,
+            callout_regex_pattern, image_extensions
+        )
 
     print('Completed: "modify_links" script...')
 
