@@ -40,7 +40,7 @@ def source_directory_selector(**kwargs: dict[str, dict | list]) -> tuple[str, st
 
 def perform_file_transformation(
     source_filepath: str, site_generator: str,
-    link_regex_pattern: str, callout_regex_pattern: str, image_extensions: list[str]
+    link_regex_pattern: str, callout_regex_pattern: str, image_extensions: tuple[str]
 ) -> None:
     '''
     Main function to call the transformation logic
@@ -64,7 +64,8 @@ def perform_file_transformation(
     # Process Links
     links_from_file = re.finditer(link_regex_pattern, file_content, flags=re.I)
     for link in links_from_file:
-        if link.group(0).startswith("![") and link.group(2).endswith(image_extensions):
+        print(link.groups())
+        if link.group(1).startswith("![") and link.group(3).endswith(image_extensions):
             file_content = process_images(file_content, link, site_generator, source_file)
         else:
             file_content = process_outgoing_links(file_content, link, site_generator)
