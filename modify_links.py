@@ -64,7 +64,7 @@ def perform_file_transformation(
     # Process Links
     links_from_file = re.finditer(link_regex_pattern, file_content, flags=re.I)
     for link in links_from_file:
-        print(link.groups())
+        # print(link.groups())
         if link.group(1).startswith("![") and link.group(3).endswith(image_extensions):
             file_content = process_images(file_content, link, site_generator, source_file)
         else:
