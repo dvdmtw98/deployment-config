@@ -3,7 +3,7 @@ const readline = require("readline");
 
 async function modifyMainIndex(indexFilePath) {
 	const linkRegexPattern = /\[\[(?!.+?:)([^\]\[]+)\|([^\]\[]+)\]\]/i;
-	const filterList = ["read-and-watch-list"];
+	const filterList = ["read-and-watch-list", "us-court-system"];
 
 	const fileStream = fs.createReadStream(indexFilePath);
 	let modifiedFile = "";
